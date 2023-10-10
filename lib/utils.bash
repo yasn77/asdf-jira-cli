@@ -50,7 +50,7 @@ download_release() {
 
   echo -n "* Checking checksum..."
   curl -sL "$GH_REPO/releases/download/v${version}/checksums.txt" | awk -v filename=${filename} -v release_file=${RELEASE_FILE} '$0 ~ release_file { print $1" "filename }' | sha256sum -c --quiet
-  if $?; then
+  if [ $? -eq 0 ]; then
     echo "OK"
   else
     echo "ERR: checksum did not match...  Quitting"
