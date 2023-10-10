@@ -49,7 +49,7 @@ download_release() {
   curl "${curl_opts[@]}" -o "$filename" -C - "$url" || fail "Could not download $url"
 
   echo -n "* Checking checksum..."
-  curl -sL "$GH_REPO/releases/download/v${version}/checksums.txt" | awk -v filename=${filename} -v release_file=${RELEASE_FILE} '$0 ~ release_file { print $1" "filename }' sha256sum -c --quiet
+  curl -sL "$GH_REPO/releases/download/v${version}/checksums.txt" | awk -v filename=${filename} -v release_file=${RELEASE_FILE} '$0 ~ release_file { print $1" "filename }' | sha256sum -c --quiet
   if $?; then
     echo "OK"
   else
