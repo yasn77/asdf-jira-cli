@@ -34,28 +34,27 @@ list_all_versions() {
 }
 
 download_release() {
-  local version filename url
-  version="$1"
-  filename="$2"
+	local version filename url
+	version="$1"
+	filename="$2"
 
-  # we must get the os/architecture.
-  ARCH=$(uname -m)
-  OS=$(uname -s | awk '{print tolower($0)}')
-  RELEASE_FILE="jira_${version}_${OS}_${ARCH}.tar.gz"
+	# we must get the os/architecture.
+	ARCH=$(uname -m)
+	OS=$(uname -s | awk '{print tolower($0)}')
+	RELEASE_FILE="jira_${version}_${OS}_${ARCH}.tar.gz"
 
-  url="$GH_REPO/releases/download/v${version}/${RELEASE_FILE}"
+	url="$GH_REPO/releases/download/v${version}/${RELEASE_FILE}"
 
-  echo "* Downloading $TOOL_NAME release $version..."
-  curl "${curl_opts[@]}" -o "$filename" -C - "$url" || fail "Could not download $url"
+	echo "* Downloading $TOOL_NAME release $version..."
+	curl "${curl_opts[@]}" -o "$filename" -C - "$url" || fail "Could not download $url"
 
-  echo -n "* Checking checksum..."
-  curl -sL "$GH_REPO/releases/download/v${version}/checksums.txt" | awk -v filename=${filename} -v release_file=${RELEASE_FILE} '$0 ~ release_file { print $1" "filename }' | sha256sum -c --quiet
-  if [ $? -eq 0 ]; then
-    echo "OK"
-  else
-    echo "ERR: checksum did not match...  Quitting"
-    exit 1
-  fi
+	echo -n "* Checking checksum..."
+	if curl -sL "$GH_REPO/releases/download/v${version}/checksums.txt" | awk -v filename="$filename" -v release_file="$RELEASE_FILE" '$0 ~ release_file { print $1" "filename }' | sha256sum -c --quiet; then
+		echo "OK"
+	else
+		echo "ERR: checksum did not match...  Quitting"
+		exit 1
+	fi
 }
 
 install_version() {
