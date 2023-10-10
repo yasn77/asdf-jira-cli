@@ -53,12 +53,16 @@ download_release() {
 	echo "* Downloading $TOOL_NAME release $version..."
 	curl "${curl_opts[@]}" -o "$filename" -C - "$url" || fail "Could not download $url"
 
-	echo -n "* Checking checksum..."
-	if curl -sL "$GH_REPO/releases/download/v${version}/checksums.txt" | awk -v filename="$filename" -v release_file="$RELEASE_FILE" '$0 ~ release_file { print $1" "filename }' | sha256sum -c --quiet; then
-		echo "OK"
+	if which sha256sum &>/dev/null; then
+		echo -n "* Checking checksum..."
+		if curl -sL "$GH_REPO/releases/download/v${version}/checksums.txt" | awk -v filename="$filename" -v release_file="$RELEASE_FILE" '$0 ~ release_file { print $1" "filename }' | sha256sum -c --quiet; then
+			echo "OK"
+		else
+			echo "ERR: checksum did not match...  Quitting"
+			exit 1
+		fi
 	else
-		echo "ERR: checksum did not match...  Quitting"
-		exit 1
+		echo "* Skipping checksum validation... sha256sum not found in path"
 	fi
 }
 
