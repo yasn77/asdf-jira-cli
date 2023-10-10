@@ -2,9 +2,8 @@
 
 set -euo pipefail
 
-# TODO: Ensure this is the correct GitHub homepage where releases can be downloaded for jira-cli.
 GH_REPO="https://github.com/ankitpokhrel/jira-cli"
-TOOL_NAME="jira-cli"
+TOOL_NAME="jira"
 TOOL_TEST="jira version"
 
 fail() {
@@ -72,7 +71,6 @@ install_version() {
 		mkdir -p "$install_path"
 		cp -r "$ASDF_DOWNLOAD_PATH"/* "$install_path"
 
-		# TODO: Assert jira-cli executable exists.
 		local tool_cmd
 		tool_cmd="$(echo "$TOOL_TEST" | cut -d' ' -f1)"
 		test -x "$install_path/$tool_cmd" || fail "Expected $install_path/$tool_cmd to be executable."
