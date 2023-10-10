@@ -41,6 +41,11 @@ download_release() {
 	# we must get the os/architecture.
 	ARCH=$(uname -m)
 	OS=$(uname -s | awk '{print tolower($0)}')
+
+	if [ "$OS" == "darwin" ]; then
+		OS="macOS"
+	fi
+
 	RELEASE_FILE="jira_${version}_${OS}_${ARCH}.tar.gz"
 
 	url="$GH_REPO/releases/download/v${version}/${RELEASE_FILE}"
